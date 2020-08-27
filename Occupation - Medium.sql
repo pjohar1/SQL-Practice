@@ -62,9 +62,52 @@ GROUP BY rn
 ORDER BY rn
 
 
-Problem 3:
+Problem 4:
+You are given a table, BST, containing two columns: N and P, where N represents the value of a node in Binary Tree, and P is the parent of N.
+
+Column		Type
+N		Integer
+P		Integer
+
+Write a query to find the node type of Binary Tree ordered by the value of the node. Output one of the following for each node:
+
+Root: If node is root node.
+Leaf: If node is leaf node.
+Inner: If node is neither root nor leaf node.
 
 SQL Query:
+SELECT N, 
+CASE WHEN P IS NULL THEN 'Root'
+WHEN N IN (SELECT DISTINCT P FROM BST WHERE P IS NOT NULL) THEN 'Inner'
+ELSE 'Leaf' END
+FROM BST ORDER BY 1
 
+
+Problem 4:
+https://www.hackerrank.com/challenges/the-company/problem
+
+SQL Query:
+SELECT COMP.COMPANY_CODE, COMP.FOUNDER, LEAD.CNT_LEAD_MANAGER, SNR_MANAGER.CNT_SNR_MANAGER,
+MANAGER.CNT_MANAGER, EMPLOYEE.CNT_EMPLOYEE
+
+FROM COMPANY AS COMP 
+
+LEFT OUTER JOIN (SELECT COMPANY_CODE, COUNT(DISTINCT(LEAD_MANAGER_CODE)) AS 'CNT_LEAD_MANAGER'               
+	    FROM LEAD_MANAGER GROUP BY COMPANY_CODE) AS LEAD
+            ON COMP.COMPANY_CODE = LEAD.COMPANY_CODE
+
+LEFT OUTER JOIN (SELECT COMPANY_CODE, COUNT(DISTINCT(SENIOR_MANAGER_CODE)) AS 'CNT_SNR_MANAGER'
+            FROM SENIOR_MANAGER GROUP BY COMPANY_CODE) AS SNR_MANAGER
+            ON COMP.COMPANY_CODE = SNR_MANAGER.COMPANY_CODE
+
+LEFT OUTER JOIN (SELECT COMPANY_CODE, COUNT(DISTINCT(MANAGER_CODE)) AS 'CNT_MANAGER' 
+            FROM MANAGER GROUP BY COMPANY_CODE) AS MANAGER
+            ON COMP.COMPANY_CODE = MANAGER.COMPANY_CODE
+
+LEFT OUTER JOIN (SELECT COMPANY_CODE, COUNT(DISTINCT(EMPLOYEE_CODE)) AS 'CNT_EMPLOYEE' 
+            FROM EMPLOYEE GROUP BY COMPANY_CODE) AS EMPLOYEE
+            ON COMP.COMPANY_CODE = EMPLOYEE.COMPANY_CODE 
+
+ORDER BY COMP.COMPANY_CODE
 
 
